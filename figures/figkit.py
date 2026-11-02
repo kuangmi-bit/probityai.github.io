@@ -637,7 +637,7 @@ def folder_back(f: Fig, x, y, w, h, ink="rule"):
     """Where records are kept: an open file folder seen from the front, x, y its back panel's top-left (under
     the tab), w by h. Draw its back with this call, then what it holds, then folder_front, so the front flap
     covers the lower part of what stands in it."""
-    tw, th = w * 0.42, 20
+    tw, th = w * 0.42, 30  # a tall tab: a lower one read as the spine of a ledger
     f.path(
         f"M{x:.1f} {y + h:.1f} L{x:.1f} {y + 5:.1f} Q{x:.1f} {y:.1f} {x + 5:.1f} {y:.1f} "
         f"L{x + 8:.1f} {y:.1f} L{x + 14:.1f} {y - th:.1f} L{x + tw:.1f} {y - th:.1f} L{x + tw + 6:.1f} {y:.1f} "
@@ -650,11 +650,11 @@ def folder_back(f: Fig, x, y, w, h, ink="rule"):
 
 def folder_front(f: Fig, x, y, w, h, flap, ink="rule"):
     """The folder's front pocket over the back panel at (x, y, w, h), drawn over what it holds: exactly the
-    back's width, its top edge rising from 0.6 flap at the left to the full flap at the right, the slanted
+    back's width, its top edge rising from 0.3 flap at the left to the full flap at the right, the slanted
     lip of a file folder's front (a rectangle overhanging a low bar read as a laptop's base)."""
     y1 = y + h
     f.path(
-        f"M{x:.1f} {y1 - flap * 0.6:.1f} L{x + w:.1f} {y1 - flap:.1f} L{x + w:.1f} {y1 - 5:.1f} "
+        f"M{x:.1f} {y1 - flap * 0.3:.1f} L{x + w:.1f} {y1 - flap:.1f} L{x + w:.1f} {y1 - 5:.1f} "
         f"Q{x + w:.1f} {y1:.1f} {x + w - 5:.1f} {y1:.1f} L{x + 5:.1f} {y1:.1f} Q{x:.1f} {y1:.1f} {x:.1f} {y1 - 5:.1f} Z",
         fill=ink,  # a solid pocket: a tile fill read as a thin slanted line across the receipts
         stroke=ink,

@@ -191,7 +191,7 @@ def _pair(f: fk.Fig, x0, cy, geo, sgap, pitch, lr=LR, fan=96, bend=110, narrow=F
     # the receipts' place: one open folder right of the ids; both routes run level past the ids and bend into it
     sh2 = SH + 10
     rw = round(sh2 * 0.74, 1)
-    g = 14
+    g = 24  # clear card between the receipts: two slips in a pocket, not the pages of one booklet
     fw = 2 * rw + 3 * g
     if narrow:
         px = f.width - fk.PAD - fw - 6
