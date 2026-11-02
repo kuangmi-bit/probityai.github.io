@@ -8,7 +8,7 @@ of the record, which crosses that rule:
 
 Top panel: what a reader that trusts the record has in front of it. The record alone, its six passages packed
 in a plain frame with a tab on its top edge that prints report.txt. Nothing in it is marked: a reader of the
-record alone has nothing to flag. The reader stands at its left in its own ink (self): a person, head and
+record alone has nothing to flag. The reader stands at its left in the text's ink (fg): a person, head and
 shoulders in profile, a page tall, facing the record with nothing in hand and no sight line drawn; a thought
 cloud in the same ink trails to the crown of its head and holds the one word it thinks: fine. No check, no pass
 glyph: a belief, not a verdict.
@@ -33,7 +33,7 @@ import figkit as fk
 
 HERE = Path(__file__).resolve().parent
 NAME = "f3-missing-not-clean"
-REV = 4
+REV = 5
 CASE = tomllib.loads((HERE / "data/source-coverage.toml").read_text())
 N, HOLE = 7, 4
 FINE = "fine"  # what a reader that trusts the record concludes
@@ -87,7 +87,9 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     ey = yr + sh_ / 2
     # the trusting reader is a person in profile, a page tall, facing the record. An eye, however large and aimed,
     # was read as an inspection icon of the lens's class ("the viewer or the checker", "an observation tool", r31;
-    # "an inspection step", r26), and two inspection icons fuse into one checker. A person is not a tool (r31)
+    # "an inspection step", r26), and two inspection icons fuse into one checker. A person is not a tool (r31).
+    # The person and its cloud are in fg, the ink of the word they hold: a third hue (self, indigo) failed taste row 2,
+    # one accent plus at most one semantic hue per frame, and no cold reader in r35 named the indigo at all (r36)
     er = sh_ / 2  # half the reader's slot, as the eye's radius was
     cw = max(rw + 30, fk.text_width(FINE, sz, "sans", 600) + 20)
     ch = gsize * 1.6
@@ -101,9 +103,9 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     _frame(f, xt, yr, sw_, sh_, CASE["record_path"], below=False)
     for x in xt:
         fk.sheet(f, x, yr, *geo)
-    hx, hy, rh = fk.reader(f, ex, ey, sh_, ink="self", facing="right")
+    hx, hy, rh = fk.reader(f, ex, ey, sh_, ink="fg", facing="right")
     # the trail lands just off the crown's back, so the last bubble sits clear of the head's outline
-    fk.thought(f, ccx, ccy, cw, ch, (hx - 0.5 * rh, hy - 1.35 * rh), ink="self")
+    fk.thought(f, ccx, ccy, cw, ch, (hx - 0.5 * rh, hy - 1.35 * rh), ink="fg")
     f.text(ccx, ccy + cap / 2, FINE, "fg", "sans", 600, anchor="middle")
     rule_y = yr + sh_ + 10 + max(28, ch * 0.4)
     # the panel rule: one line in rule ink across the whole card, edge to edge, so the top panel is a closed scene
