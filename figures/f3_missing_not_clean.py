@@ -3,7 +3,7 @@
 "Record" is probity-verify's own word for the stored report it checks against the source capture
 (adapters/source_coverage.py: a selected span found in the source and not in the record returns
 contradicted, selected_span_missing_from_record). The picture separates the two readers' vantages, one
-panel each, divided by a thin rule:
+panel each, joined only by a dashed tie between the two copies of the record:
 
 Top panel: what a reader that trusts the record has in front of it. The record alone, its six passages packed
 in a plain frame with a tab on its top edge that prints report.txt. Nothing in it is marked: a reader of the
@@ -11,12 +11,13 @@ record alone has nothing to flag. The eye stands at its left in the trusting rea
 tall, its iris set toward the record so it is seen looking at it, and a thought cloud in the same ink trails
 from the eye and holds the one word it thinks: fine. No check, no pass glyph: a belief, not a verdict.
 Bottom panel: what probity-verify has in front of it. The same six passages, now standing over the source
-passages they came from, so the fifth place in the record is empty; nothing is drawn in it. Under it the
-source capture, all seven passages, with a tab hanging from its foot that prints source.html. One straight
-accent rung pairs each source passage with its record passage; the fifth rung, in loss ink, rises to the
-record's foot like the others, with nothing above it: the source has the passage, the record has none to pair with.
-A brace gathers both rows into the lens, which prints a receipt with a cross in the same loss ink:
-contradicted, with the packet's reason line under it. The two readers stand at the same x, one per panel.
+passages they came from, so the fifth place in the record holds the family's absence glyph: a dashed footprint,
+the place a passage should stand, with nothing in it. Under it the source capture, all seven passages, with a
+tab hanging from its foot that prints source.html. One straight accent rung pairs each source passage with its
+record passage; the fifth rung, in loss ink, rises to the record's foot like the others and stops there, under
+the footprint: the source has the passage, the record has none to pair with. A brace gathers both rows into the
+lens by a plain line, and the lens prints a receipt with a cross in the same loss ink: contradicted, with the
+packet's reason line under the panel.
 The only words are what the readers print and the two file paths the packet binds.
 """
 
@@ -112,16 +113,19 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     f.path(f"M{t1:.1f} {y0:.1f} L{t1:.1f} {jy:.1f} L{t2:.1f} {jy:.1f} L{t2:.1f} {y2:.1f}", stroke="rule", sw=2.5, dash="8 6")
     _frame(f, xs, yb, sw_, sh_, CASE["record_path"], below=False)
     for i, x in enumerate(xs):
-        if i != HOLE:
-            fk.sheet(f, x, yb, *geo)
+        # the fifth place holds the absence glyph. A bare gap was read three ways on identical pixels by the simple
+        # seat (r24 "the one match that fails", r25 "missing from the record", r26 "a piece of the report with no
+        # match in the source"): a gap is nothing, and a sentence needs a thing, so the place is named as absence
+        fk.sheet(f, x, yb, *geo, state="missing" if i == HOLE else "present")
     under = yb + sh_ + 10  # the record frame's foot
     ys = under + 2 * (lr + 30) + 10  # the source's top
     src_foot = _frame(f, xs, ys, sw_, sh_, CASE["source_path"], below=True)
     for x in xs:
         fk.sheet(f, x, ys, *geo)
     # probity-verify pairs each source passage with its record passage, one straight rung per pair; the fifth
-    # rung, in loss ink, rises to the record's foot like the other six and has nothing above it: absence shown by
-    # absence. Every mark drawn inside the empty place was read as a seventh page or a marker.
+    # rung, in loss ink, rises to the record's foot like the other six and stops there, under the footprint. The
+    # rung never enters the place: every rung END drawn inside it was read as a seventh page or a marker (r19 to
+    # r22). The footprint is not a rung end; it is the family's absence glyph, read as missing in F1 four of four.
     for i, x in enumerate(xs):
         mx_ = x + sw_ / 2
         if i == HOLE:
@@ -142,8 +146,7 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     )
     assert bx + 40 <= gx - lr, "the rows run into the readers' column"
     yv = bm
-    f.line(bx + 26, yv, gx - lr - 12, yv, "accent", sw=3)
-    fk.arrow(f, gx - lr - 4, yv, size=7)
+    f.line(bx + 26, yv, gx - lr - 2, yv, "accent", sw=3)  # no arrowhead: it paid for the footprint (r27)
     fk.lens(f, gx, yv, lr)
     f.line(gx + lr + 2, yv, mx - 12, yv, "accent", sw=3)
     fk.arrow(f, mx - 4, yv, size=7)
@@ -153,9 +156,9 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
         ry = src_foot + 14 + sz
         f.text(fk.PAD - 1.5, ry, CASE["reason"], "muted", "mono", 500)
         return ry + sz * 0.6
-    ry = yv + gsize * 0.95 + 14 + sz
+    ry = bb_ + 14 + sz  # under the brace's foot: beside the receipt it ran across the brace's stem
     rx = f.width - fk.PAD - fk.text_width(CASE["reason"], sz, "mono", 500)
-    assert rx > rx1 + 16, "the reason runs into the source row"
+    assert ry - cap >= bb_ + 10, "the reason runs into the brace"
     f.text(rx, ry, CASE["reason"], "muted", "mono", 500)
     return max(ry + sz * 0.4, src_foot)
 
