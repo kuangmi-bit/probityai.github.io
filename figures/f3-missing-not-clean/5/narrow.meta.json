@@ -1,0 +1,16 @@
+{
+ "name": "f3-missing-not-clean",
+ "layout": "narrow",
+ "width": 720,
+ "height": 678,
+ "text_size": 34,
+ "alt": "Top: a reader that trusts the record has only the record in front of it, six passages with nothing to flag, and thinks it fine. Bottom: the same record over the source capture it came from, seven passages. probity-verify pairs each source passage with its passage in the record, finds the fifth has none, and returns contradicted, reason selected_span_missing_from_record.",
+ "words": [
+  "report.txt",
+  "fine",
+  "report.txt",
+  "source.html",
+  "contradicted",
+  "selected_span_missing_from_record"
+ ]
+}
