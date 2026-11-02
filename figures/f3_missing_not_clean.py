@@ -3,7 +3,8 @@
 "Record" is probity-verify's own word for the stored report it checks against the source capture
 (adapters/source_coverage.py: a selected span found in the source and not in the record returns
 contradicted, selected_span_missing_from_record). The picture separates the two readers' vantages, one
-panel each, joined only by a dashed tie between the two copies of the record:
+panel each, parted by one rule across the whole card and joined only by a dashed tie between the two copies
+of the record, which crosses that rule:
 
 Top panel: what a reader that trusts the record has in front of it. The record alone, its six passages packed
 in a plain frame with a tab on its top edge that prints report.txt. Nothing in it is marked: a reader of the
@@ -104,15 +105,22 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     fk.thought(f, ccx, ccy, cw, ch, (hx - 0.5 * rh, hy - 1.35 * rh), ink="self")
     f.text(ccx, ccy + cap / 2, FINE, "fg", "sans", 600, anchor="middle")
     rule_y = yr + sh_ + 10 + max(28, ch * 0.4)
+    # the panel rule: one line in rule ink across the whole card, edge to edge, so the top panel is a closed scene
+    # (a person, a cloud, the record, nothing else) and the bottom panel another. Without it three seats of four
+    # read the top row as the first row of one diagram and never tied "fine" to having only the record; two
+    # graders in one round and the r26 grader named this divider (r32). Paid for by the brace-to-lens arrowhead
+    f.line(0, rule_y, f.width, rule_y, "rule", sw=2.5)
     # bottom panel: the same six passages over the source passages they came from; the fifth place is empty
     tab_h = cap + 16
-    yb = rule_y + 26 + tab_h + 10
-    # no divider between the panels: one dashed tie runs from the top record's foot to the bottom record's
-    # tab, so the two report.txt rows read as one file seen twice
+    yb = rule_y + 44 + tab_h + 10
+    # one dashed tie runs from the top record's foot straight down through the rule, jogs in the bottom panel's
+    # band and lands on the bottom record's tab, so the two report.txt rows read as one file seen twice: the tie
+    # says one file, the rule says two vantages. The jog sits 22 units below the rule, never on it (at the gap's
+    # midpoint it lay one unit from the rule), so the top panel holds only a short stub of the tie
     t1 = (xt[0] - 10 + xt[-1] + sw_ + 10) / 2
     t2 = (xs[0] - 10 + xs[N - 1] + sw_ + 10) / 2
     y0, y2 = yr + sh_ + 10, yb - 10 - tab_h
-    jy = (y0 + y2) / 2
+    jy = (rule_y + y2) / 2
     f.path(f"M{t1:.1f} {y0:.1f} L{t1:.1f} {jy:.1f} L{t2:.1f} {jy:.1f} L{t2:.1f} {y2:.1f}", stroke="rule", sw=2.5, dash="8 6")
     _frame(f, xs, yb, sw_, sh_, CASE["record_path"], below=False)
     for i, x in enumerate(xs):
@@ -151,8 +159,9 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     )
     assert bx + 40 <= gx - lr, "the rows run into the readers' column"
     yv = bm
-    f.line(bx + 26, yv, gx - lr - 12, yv, "accent", sw=3)
-    fk.arrow(f, gx - lr - 4, yv, size=7)
+    # the route from the brace runs into the lens's rim with no arrowhead: it paid for the panel rule (r32), r27
+    # had already shown no seat misses it, and the lens-to-receipt arrowhead keeps the route's direction
+    f.line(bx + 26, yv, gx - lr - 2, yv, "accent", sw=3)
     fk.lens(f, gx, yv, lr)
     f.line(gx + lr + 2, yv, mx - 12, yv, "accent", sw=3)
     fk.arrow(f, mx - 4, yv, size=7)
