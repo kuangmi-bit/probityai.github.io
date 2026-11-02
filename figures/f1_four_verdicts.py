@@ -56,6 +56,7 @@ STATE = (
 LR, SH = 20, 62  # lens radius, receipt height
 ROUTE_W = 3  # the verifier's route, stroke width
 LINE = 1.2  # the verdict word's baseline to the exit code's, in text sizes
+ID_CLEAR = 28  # clear card between a verifier id and its lens: 18 px at the README's 830, 16 at a 420 column
 
 
 def _rim(lr: float, version: int) -> float:
@@ -135,8 +136,8 @@ def facing_ids(f: fk.Fig, lr, gap) -> tuple[float, float, float]:
     v1, v2 = ARMS[3]["verifier_ids"]
     rise1, drop1 = fk.ink_bounds(v1, sz, "mono", 500)
     rise2, drop2 = fk.ink_bounds(v2, sz, "mono", 500)
-    down1 = _rim(lr, 1) * 1.5 + 6 + rise1  # the handle reaches 1.5 rims down and right
-    up2 = _rim(lr, 2) + 6 + drop2
+    down1 = _rim(lr, 1) * 1.5 + ID_CLEAR + rise1  # the handle reaches 1.5 rims down and right
+    up2 = _rim(lr, 2) + ID_CLEAR + drop2
     return down1 + drop1 + gap + rise2 + up2, down1, up2
 
 
@@ -176,9 +177,9 @@ def _pair(f: fk.Fig, x0, cy, geo, sgap, pitch, lr=LR, fan=96, bend=110, narrow=F
         # over lens 1, ending at its right rim; under lens 2, ending at the frame's margin where the column is too
         # narrow for it to start at the rim
         x1 = lx + lr - w1
-        y1 = rows[0] - _rim(lr, 1) - 6 - fk.ink_bounds(v1, sz, "mono", 500)[1]
+        y1 = rows[0] - _rim(lr, 1) - ID_CLEAR - fk.ink_bounds(v1, sz, "mono", 500)[1]
         x2 = min(lx - lr, f.width - fk.PAD - w2)
-        y2 = rows[1] + _rim(lr, 2) * 1.5 + 6 + fk.ink_bounds(v2, sz, "mono", 500)[0]
+        y2 = rows[1] + _rim(lr, 2) * 1.5 + ID_CLEAR + fk.ink_bounds(v2, sz, "mono", 500)[0]
     else:
         x1, y1 = lx - lr, rows[0] + down1
         x2, y2 = lx - lr, rows[1] - up2
@@ -266,7 +267,9 @@ def narrow() -> fk.Fig:
     f.line(pad, rule_y, W - pad, rule_y, "rule", sw=1.5)
     # panel 2: the same archive fans into the version 1 and version 2 readings, one folder keeps both
     pitch2 = bh + 2 * f.text_size + 40
-    c2 = rule_y + 30 + f.text_size + 18 + 18 * 1.3 + pitch2 / 2
+    # version 1's id stands over its lens: 24 of card under the rule, the id's ink, ID_CLEAR, then the rim
+    v1_ink = sum(fk.ink_bounds(ARMS[3]["verifier_ids"][0], f.text_size, "mono", 500))
+    c2 = rule_y + 24 + v1_ink + ID_CLEAR + _rim(18, 1) + pitch2 / 2
     low = _pair(f, pad, c2, geo, sgap, pitch2, 18, fan=70, narrow=True)
     f.height = round(low + 24)
     return f

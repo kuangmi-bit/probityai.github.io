@@ -497,7 +497,7 @@ def box(
     text=False,
 ):
     """An archive box with its top-left at (x, y), the files' tops: n files stand in it, the front panel
-    covers their lowest part, and the closed padlock sits on the panel's top edge. missing is the index of a
+    covers their lowest part, and the closed padlock sits on the panel's front, clear of every file. missing is the index of a
     file that is not there (a dashed footprint); mark is (index, (col, row)) for a changed byte, drawn in the
     files' top row in loss ink with a pencil in the same ink resting its point on it. Returns (width, height)."""
     sw_, sh_ = sheet_size(*geo)
@@ -521,13 +521,11 @@ def box(
             text=text,
         )
     f.rect(x, panel, w, y + h - panel, fill="tile", stroke="rule", rx=5, sw=2.5)
-    # the box's hand hole, low on the panel; the box with a pencil on it drops it, so the pencil's ferrule and
-    # eraser add no net mark (a redraw may add a mark only if it removes one)
-    if mark is None:
-        hw = min(46, w * 0.22)
-        hy = panel + (y + h - panel) * 0.62
-        f.rect(x + w / 2 - hw / 2, hy - 5, hw, 10, fill="card", stroke="rule", rx=5, sw=2)
-    lock(f, x + w - BOX_M - lock_r, panel, r=lock_r)
+    # the seal sits on the front panel, centred where a hand hole would be, so it covers no file: from the
+    # shackle's top (1.47 r above its centre) to the body's foot (1.12 r below) it stays inside the panel
+    ph = y + h - panel
+    r = min(lock_r, (ph - 6) / 2.59)
+    lock(f, x + w / 2, panel + 3 + 1.47 * r + (ph - 6 - 2.59 * r) / 2, r=r)
     if mark is not None:
         i, (c, r) = mark
         cols, _rows, cell, gap, pad = geo
@@ -658,7 +656,7 @@ def folder_front(f: Fig, x, y, w, h, flap, ink="rule"):
     f.path(
         f"M{x:.1f} {y1 - flap * 0.6:.1f} L{x + w:.1f} {y1 - flap:.1f} L{x + w:.1f} {y1 - 5:.1f} "
         f"Q{x + w:.1f} {y1:.1f} {x + w - 5:.1f} {y1:.1f} L{x + 5:.1f} {y1:.1f} Q{x:.1f} {y1:.1f} {x:.1f} {y1 - 5:.1f} Z",
-        fill="tile",
+        fill=ink,  # a solid pocket: a tile fill read as a thin slanted line across the receipts
         stroke=ink,
         sw=2.5,
         join="round",
