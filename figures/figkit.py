@@ -75,6 +75,24 @@ def cap_height(size: float, font: str = "sans", weight: int = 400) -> float:
     return os2.sCapHeight * size / head.unitsPerEm
 
 
+def ink_bounds(s: str, size: float, font: str = "sans", weight: int = 400) -> tuple[float, float]:
+    """(rise, drop) of s in user units: how far its ink reaches above and below the baseline, from the glyphs'
+    own outlines. What a reader (or an OCR line box) sees as the text's top and bottom."""
+    from fontTools.pens.boundsPen import BoundsPen
+
+    f = _font((font, weight))
+    glyphs: Any = f.getGlyphSet()
+    cmap: Any = f.getBestCmap()
+    head: Any = f["head"]
+    top, bottom = 0.0, 0.0
+    for c in s:
+        pen = BoundsPen(glyphs)
+        glyphs[cmap[ord(c)]].draw(pen)
+        if pen.bounds:
+            top, bottom = max(top, pen.bounds[3]), min(bottom, pen.bounds[1])
+    return top * size / head.unitsPerEm, -bottom * size / head.unitsPerEm
+
+
 def _woff_b64(key: tuple[str, int], chars: set[str]) -> str:
     opts: Any = subset.Options()
     opts.flavor = "woff"
