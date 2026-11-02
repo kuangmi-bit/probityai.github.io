@@ -394,9 +394,9 @@ def sheet(
     last line short, so a small sheet reads as a written page and never as a window grid."""
     w, h = sheet_size(cols, rows, cell, gap, pad)
     if state == "missing":
-        # the place a file should stand: a dashed footprint with no dog-ear and nothing inside, so it reads as
-        # an absence and never as a blank page
-        f.rect(x, y, w, h, fill="card", stroke="fg", rx=3, sw=3, dash="8 6")
+        # the place a file should stand: a dashed footprint with no dog-ear and nothing inside, set in from the
+        # neighbours' edges so clear card separates it from them: an empty slot, never a third page outline
+        f.rect(x + 4, y + 4, w - 8, h - 4, fill="card", stroke="fg", rx=3, sw=3, dash="8 6")
         return w, h
     outline = _eared(x, y, w, h, EAR)
     f.path(outline, fill="tile", stroke="rule", sw=2, join="round")
