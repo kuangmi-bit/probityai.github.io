@@ -7,9 +7,10 @@ panel each, joined only by a dashed tie between the two copies of the record:
 
 Top panel: what a reader that trusts the record has in front of it. The record alone, its six passages packed
 in a plain frame with a tab on its top edge that prints report.txt. Nothing in it is marked: a reader of the
-record alone has nothing to flag. The eye stands at its left in the trusting reader's own ink (self), a page
-tall, its iris set toward the record so it is seen looking at it, and a thought cloud in the same ink trails
-from the eye and holds the one word it thinks: fine. No check, no pass glyph: a belief, not a verdict.
+record alone has nothing to flag. The reader stands at its left in its own ink (self): a person, head and
+shoulders in profile, a page tall, facing the record with nothing in hand and no sight line drawn; a thought
+cloud in the same ink trails to the crown of its head and holds the one word it thinks: fine. No check, no pass
+glyph: a belief, not a verdict.
 Bottom panel: what probity-verify has in front of it. The same six passages, now standing over the source
 passages they came from, so the fifth place in the record is empty; nothing is drawn in it. Under it the
 source capture, all seven passages, with a tab hanging from its foot that prints source.html. One straight
@@ -82,23 +83,25 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     # top stands where the bottom panel's printed verdict stands (a reader there was read as a passing verdict)
     yr = top
     ey = yr + sh_ / 2
-    # the eye is a page tall and looks at the record (iris toward it): at lens scale with a centred iris it was "a
-    # small eye icon beside" the bubble, and two seats read the pair as a label, apart from the diagram (r25)
-    er = sh_ / 2
+    # the trusting reader is a person in profile, a page tall, facing the record. An eye, however large and aimed,
+    # was read as an inspection icon of the lens's class ("the viewer or the checker", "an observation tool", r31;
+    # "an inspection step", r26), and two inspection icons fuse into one checker. A person is not a tool (r31)
+    er = sh_ / 2  # half the reader's slot, as the eye's radius was
     cw = max(rw + 30, fk.text_width(FINE, sz, "sans", 600) + 20)
     ch = gsize * 1.6
     # the cloud holds the one word the reader thinks, and nothing else: a check in here was read as "a check that
     # passed" by the simple seat in five rounds out of five
     ccx, ccy = x0 + cw / 2, ey - ch * 0.3
     ex = x0 + cw + 34 + er
-    shift = ex + er + 8 + 10 - x0  # the record starts right in front of the eye's gaze
+    shift = ex + er + 8 + 10 - x0  # the record starts right in front of the reader's face
     xt = [x + shift for x in xs[: N - 1]]
     assert xt[-1] + sw_ + 10 <= f.width - fk.PAD, "the top record runs off the frame"
     _frame(f, xt, yr, sw_, sh_, CASE["record_path"], below=False)
     for x in xt:
         fk.sheet(f, x, yr, *geo)
-    fk.eye(f, ex, ey, er, ink="self", gaze=0.36)
-    fk.thought(f, ccx, ccy, cw, ch, (ex - er * 0.8, ey - er * 0.6), ink="self")
+    hx, hy, rh = fk.reader(f, ex, ey, sh_, ink="self", facing="right")
+    # the trail lands just off the crown's back, so the last bubble sits clear of the head's outline
+    fk.thought(f, ccx, ccy, cw, ch, (hx - 0.5 * rh, hy - 1.35 * rh), ink="self")
     f.text(ccx, ccy + cap / 2, FINE, "fg", "sans", 600, anchor="middle")
     rule_y = yr + sh_ + 10 + max(28, ch * 0.4)
     # bottom panel: the same six passages over the source passages they came from; the fifth place is empty

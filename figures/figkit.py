@@ -360,7 +360,7 @@ def write(figs: list[Fig], root: Path, rev: int) -> list[Path]:
 # stand in it side by side, the box's front panel covers their lower half, and a padlock whose body carries
 # a digest mark (#) sits on the panel's top edge: a signature over the files' digest. A verifier is a lens;
 # what it prints is a till receipt (straight top, torn zigzag foot) with the verdict glyph on it. A reader
-# that only looks is an eye.
+# that only looks is a person: a head and shoulders in profile, facing what it reads.
 
 CELL, GAP, SPAD, EAR = 12, 5, 11, 12
 
@@ -689,17 +689,37 @@ def thought(f: Fig, cx, cy, w, h, toward, ink="fg"):
         f.circle(cx + dx * t, cy + dy * t, rr, fill="tile", stroke=ink, sw=2)
 
 
-def eye(f: Fig, cx, cy, r=18, ink="fg", gaze=0.0):
-    """A reader that only looks: an open eye, an almond outline round a solid iris. gaze sets the iris that
-    fraction of r toward +x (negative toward -x), so the eye looks at what stands on that side; 0 looks at
-    the viewer. Keep |gaze| <= 0.36: at 0.4 the iris touches the lid's stroke."""
+def reader(f: Fig, cx, cy, h, ink="fg", facing="right"):
+    """A reader that only looks: a person's head and shoulders in profile, h tall, centred on (cx, cy), facing
+    right or left. The face side carries a brow, a nose and a chin, so the profile has a front and the person is
+    seen to face what stands on that side. No eye drawn in the head, no hand, no desk, no sight line: a person who
+    reads, not an inspection step (an eye icon was read as one, the same class as the lens). Returns the head's
+    centre and radius so a thought cloud's trail can be aimed at the crown."""
+    s = 1 if facing == "right" else -1
+    rh = h / 3.6  # head radius: the crown is 1.15 rh above the head's centre, the shoulders' foot 2.4 rh below it
+    hx, hy = cx, cy - h / 2 + 1.2 * rh
+
+    def p(u, v):
+        return f"{hx + s * u * rh:.1f} {hy + v * rh:.1f}"
+
+    # shoulders first, so the neck stands in front of their top edge
     f.path(
-        f"M{cx - r:.1f} {cy:.1f} Q{cx:.1f} {cy - r * 1.05:.1f} {cx + r:.1f} {cy:.1f} Q{cx:.1f} {cy + r * 1.05:.1f} {cx - r:.1f} {cy:.1f} Z",
+        f"M{p(-1.7, 2.4)} C{p(-1.7, 1.6)} {p(-1.0, 1.3)} {p(-0.3, 1.25)} L{p(0.4, 1.25)} "
+        f"C{p(1.1, 1.3)} {p(1.6, 1.6)} {p(1.6, 2.4)} Z",
         fill="tile",
         stroke=ink,
         sw=3,
     )
-    f.circle(cx + gaze * r, cy, r * 0.36, fill=ink)
+    # head and neck, left open at the neck's foot so no stroke crosses the neck where it meets the shoulders
+    f.path(
+        f"M{p(-0.45, 1.4)} L{p(-0.45, 1.0)} C{p(-1.15, 0.7)} {p(-1.2, -0.9)} {p(-0.2, -1.15)} "
+        f"C{p(0.5, -1.25)} {p(0.95, -0.85)} {p(0.95, -0.35)} L{p(0.98, -0.15)} L{p(1.38, 0.25)} L{p(1.0, 0.35)} "
+        f"L{p(1.0, 0.62)} Q{p(1.02, 0.92)} {p(0.68, 0.98)} L{p(0.35, 1.02)} L{p(0.35, 1.4)}",
+        fill="tile",
+        stroke=ink,
+        sw=3,
+    )
+    return hx, hy, rh
 
 
 def arrow(f: Fig, x, y, ink="accent", size=9, direction="right"):
