@@ -673,15 +673,17 @@ def thought(f: Fig, cx, cy, w, h, toward, ink="fg"):
         f.circle(cx + dx * t, cy + dy * t, rr, fill="tile", stroke=ink, sw=2)
 
 
-def eye(f: Fig, cx, cy, r=18, ink="fg"):
-    """A reader that only looks: an open eye, an almond outline round a solid iris."""
+def eye(f: Fig, cx, cy, r=18, ink="fg", gaze=0.0):
+    """A reader that only looks: an open eye, an almond outline round a solid iris. gaze sets the iris that
+    fraction of r toward +x (negative toward -x), so the eye looks at what stands on that side; 0 looks at
+    the viewer. Keep |gaze| <= 0.36: at 0.4 the iris touches the lid's stroke."""
     f.path(
         f"M{cx - r:.1f} {cy:.1f} Q{cx:.1f} {cy - r * 1.05:.1f} {cx + r:.1f} {cy:.1f} Q{cx:.1f} {cy + r * 1.05:.1f} {cx - r:.1f} {cy:.1f} Z",
         fill="tile",
         stroke=ink,
         sw=3,
     )
-    f.circle(cx, cy, r * 0.36, fill=ink)
+    f.circle(cx + gaze * r, cy, r * 0.36, fill=ink)
 
 
 def arrow(f: Fig, x, y, ink="accent", size=9, direction="right"):

@@ -7,8 +7,9 @@ panel each, divided by a thin rule:
 
 Top panel: what a reader that trusts the record has in front of it. The record alone, its six passages packed
 in a plain frame with a tab on its top edge that prints report.txt. Nothing in it is marked: a reader of the
-record alone has nothing to flag. The eye stands to its right in the trusting reader's own ink (self), and a
-thought cloud in the same ink holds the one word it thinks: fine. No check, no pass glyph: a belief, not a verdict.
+record alone has nothing to flag. The eye stands at its left in the trusting reader's own ink (self), a page
+tall, its iris set toward the record so it is seen looking at it, and a thought cloud in the same ink trails
+from the eye and holds the one word it thinks: fine. No check, no pass glyph: a belief, not a verdict.
 Bottom panel: what probity-verify has in front of it. The same six passages, now standing over the source
 passages they came from, so the fifth place in the record is empty; nothing is drawn in it. Under it the
 source capture, all seven passages, with a tab hanging from its foot that prints source.html. One straight
@@ -80,20 +81,22 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     # top stands where the bottom panel's printed verdict stands (a reader there was read as a passing verdict)
     yr = top
     ey = yr + sh_ / 2
-    er = lr * 1.25
+    # the eye is a page tall and looks at the record (iris toward it): at lens scale with a centred iris it was "a
+    # small eye icon beside" the bubble, and two seats read the pair as a label, apart from the diagram (r25)
+    er = sh_ / 2
     cw = max(rw + 30, fk.text_width(FINE, sz, "sans", 600) + 20)
     ch = gsize * 1.6
     # the cloud holds the one word the reader thinks, and nothing else: a check in here was read as "a check that
     # passed" by the simple seat in five rounds out of five
     ccx, ccy = x0 + cw / 2, ey - ch * 0.3
     ex = x0 + cw + 34 + er
-    shift = ex + er + 24 + 10 - x0  # the record starts clear of the eye, as far from it as it stood before
+    shift = ex + er + 8 + 10 - x0  # the record starts right in front of the eye's gaze
     xt = [x + shift for x in xs[: N - 1]]
     assert xt[-1] + sw_ + 10 <= f.width - fk.PAD, "the top record runs off the frame"
     _frame(f, xt, yr, sw_, sh_, CASE["record_path"], below=False)
     for x in xt:
         fk.sheet(f, x, yr, *geo)
-    fk.eye(f, ex, ey, er, ink="self")
+    fk.eye(f, ex, ey, er, ink="self", gaze=0.36)
     fk.thought(f, ccx, ccy, cw, ch, (ex - er * 0.8, ey - er * 0.6), ink="self")
     f.text(ccx, ccy + cap / 2, FINE, "fg", "sans", 600, anchor="middle")
     rule_y = yr + sh_ + 10 + max(28, ch * 0.4)
