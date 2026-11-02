@@ -16,8 +16,9 @@ Bottom panel: what probity-verify has in front of it. The same six passages, now
 passages they came from, so the fifth place in the record is empty; nothing is drawn in it. Under it the
 source capture, all seven passages, with a tab hanging from its foot that prints source.html. One straight
 accent rung pairs each source passage with its record passage; the fifth rung, in loss ink, starts at the
-source's fifth passage like the others and stops short of the record's foot, its round end in open air under
-the empty place: the source has the passage, and the rung reaches nothing in the record. A brace gathers both
+source's fifth passage like the others and stops halfway up the gap between the rows, its round end in open
+air far below the empty place: the source has the passage, and the rung reaches nothing in the record. A
+brace gathers both
 rows into the lens, which prints a receipt with a cross in the same loss ink: contradicted, with the packet's
 reason line under the panel.
 The only words are what the readers print and the two file paths the packet binds.
@@ -32,7 +33,7 @@ import figkit as fk
 
 HERE = Path(__file__).resolve().parent
 NAME = "f3-missing-not-clean"
-REV = 3
+REV = 4
 CASE = tomllib.loads((HERE / "data/source-coverage.toml").read_text())
 N, HOLE = 7, 4
 FINE = "fine"  # what a reader that trusts the record concludes
@@ -135,14 +136,18 @@ def _draw(f: fk.Fig, geo, sgap, top, gsize, reason_below, lr) -> float:
     for x in xs:
         fk.sheet(f, x, ys, *geo)
     # probity-verify pairs each source passage with its record passage, one straight rung per pair; the fifth
-    # rung, in loss ink, starts at the source's fifth passage like the others and stops 20 units short of the
-    # record's foot: it starts at a passage that exists and visibly reaches nothing. A rung end inside the empty
-    # place was read as a seventh page or a marker (r19 to r22), a footprint there as a placeholder entry (r27),
-    # and a rung reaching the frame's foot under a bare gap was read three ways (r24 to r26).
+    # rung, in loss ink, starts at the source's fifth passage like the others and stops at the midpoint of the
+    # gap between the rows, 48 units (wide) and 50 (narrow) short of the record's foot: it starts at a passage
+    # that exists and visibly reaches nothing. A rung end inside the empty place was read as a seventh page or a
+    # marker (r19 to r22), a footprint there as a placeholder entry (r27), a rung reaching the frame's foot under
+    # a bare gap was read three ways (r24 to r26), and a rung stopping 20 units short (12 px on the panel the
+    # readers see) was read by the simple seat as a link that 'does not hold' and as 'linking the fifth icon of
+    # the middle row to the fifth icon of the bottom row' (r34); two graders and the jury seat asked for half (r35)
+    tip = (under + ys - 10) / 2
     for i, x in enumerate(xs):
         mx_ = x + sw_ / 2
         if i == HOLE:
-            f.line(mx_, ys - 12, mx_, under + 20, "loss", sw=4)
+            f.line(mx_, ys - 12, mx_, tip, "loss", sw=4)
         else:
             f.line(mx_, ys - 12, mx_, under + 2, "accent", sw=3)
     # a brace gathers both rows into the lens: it reads the two rows side by side
